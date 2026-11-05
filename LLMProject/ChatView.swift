@@ -1,7 +1,7 @@
 import SwiftUI
 import Playgrounds
 
-struct ContentView: View {
+struct ChatView: View {
     @State private var vm = ChatViewModel()
 
     var body: some View {
@@ -47,7 +47,6 @@ private struct MessageBubble: View {
     }
 
     var body: some View {
-//        Text(message.text.isEmpty ? "…" : message.text)
         Text(rendered)
             .padding(10)
             .background(
@@ -68,5 +67,5 @@ private struct MessageBubble: View {
 }
 
 #Preview {
-    ContentView()
+    ChatView()
 }

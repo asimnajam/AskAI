@@ -1,0 +1,63 @@
+//
+//  MatchSummary.swift
+//  LLMProject
+//
+//  Created by Syed Asim Najam on 05/11/2026.
+//
+
+import Foundation
+
+struct MatchSummary: Codable, Sendable {
+    let headline: String
+    let bullets: [String]
+    let keyStat: String
+    let playerOfTheMatch: String
+    
+    func validate(against match: Match) throws {
+        guard bullets.count == 3 else {
+            throw SummaryError.wrongBulletCount(bullets.count)
+        }
+        
+        if let long = bullets.first(where: { $0.split(separator: " ").count > 20 }) {
+            throw SummaryError.bulletTooLong(long)
+        }
+        
+        guard match.allPlayers.contains(playerOfTheMatch) else {
+            throw SummaryError.unknownPlayer(playerOfTheMatch)
+        }
+    }
+}
+
+extension MatchSummary {
+    static func decode(from raw: String) throws -> MatchSummary {
+        var text = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        if text.hasPrefix("```") {
+            text = text.replacingOccurrences(of: "```json", with: "")
+            text = text.replacingOccurrences(of: "```", with: "")
+            text = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        }
+        
+        do {
+            return try JSONDecoder().decode(MatchSummary.self, from: Data(text.utf8))
+        } catch {
+            throw SummaryError.invalidJSON
+        }
+    }
+}
+
+enum SummaryError: LocalizedError, Equatable {
+    case invalidJSON
+    case wrongBulletCount(Int)
+    case bulletTooLong(String)
+    case unknownPlayer(String)
+ 
+    var errorDescription: String? {
+        switch self {
+        case .invalidJSON: "The AI returned data we couldn't read."
+        case .wrongBulletCount(let n): "Expected 3 key points, got \(n)."
+        case .bulletTooLong(let text): "A key point was too long: \(text)"
+        case .unknownPlayer(let name): "\"\(name)\" didn't play in this match."
+        }
+    }
+}
