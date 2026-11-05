@@ -45,6 +45,8 @@ struct LLMClient: Sendable {
         }
         let choices: [Choice]
     }
+    
+    
 }
 
 extension LLMClient {
@@ -123,8 +125,9 @@ extension LLMClient {
     
     func stream(_ history: [ChatMessage], system: String) -> AsyncThrowingStream<String, Error> {
         // The model has no memory: the whole conversation is sent every time.
-        let messages = [["role": "system", "content": system]]
-            + history.map { ["role": $0.role.rawValue, "content": $0.text] }
+        let messages = [
+            ["role": "system", "content": system]
+        ] + history.map { ["role": $0.role.rawValue, "content": $0.text] }
 
         return AsyncThrowingStream { continuation in
             let task = Task {
@@ -150,5 +153,45 @@ extension LLMClient {
                 task.cancel()
             }
         }
+    }
+    
+    func complete(
+        _ prompt: LLMPrompt,
+        schemaJSON: String? = nil,
+        temperature: Double? = nil
+    ) async throws -> LLMResponse {
+        // 1. What to send: instructions + data
+        let messages = [
+            ["role": "system", "content": prompt.system],
+            ["role": "user", "content": prompt.user],
+        ]
+        
+        // 2. Try models until one answers. This time keep the model name too.
+        let (bytes, model) = try await openConnection { model in
+            try makeRequest(
+                model: model,
+                messages: messages,
+                stream: false,              // ← one complete answer, not pieces
+                temperature: temperature,
+                schemaJSON: schemaJSON
+            )
+        }
+        
+        // 3. Collect the whole response
+        var data = Data()
+        for try await byte in bytes {
+            data.append(byte)
+        }
+        
+        // 4. Unpack the envelope: choices[0].message.content
+        let completion = try JSONDecoder().decode(Completion.self, from: data)
+        guard let content = completion.choices.first?.message.content else {
+            throw LLMError.invalidResponse
+        }
+        
+        // 5. Log which prompt and model produced this answer
+        print("📝 \(prompt.promptID) v\(prompt.promptVersion) · \(model)")
+        
+        return LLMResponse(content: content, model: model)
     }
 }
