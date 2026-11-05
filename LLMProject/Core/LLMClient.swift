@@ -37,6 +37,14 @@ struct LLMClient: Sendable {
         }
         let choices: [Choice]
     }
+    
+    private struct Completion: Decodable {
+        struct Choice: Decodable {
+            struct Message: Decodable { let content: String? }
+            let message: Message
+        }
+        let choices: [Choice]
+    }
 }
 
 extension LLMClient {
@@ -80,7 +88,8 @@ extension LLMClient {
         model: String,
         messages: [[String: String]],
         stream: Bool,
-        temperature: Double? = nil
+        temperature: Double? = nil,
+        schemaJSON: String? = nil
     ) throws -> URLRequest {
         var request = URLRequest(url: endpoint)
         request.httpMethod = "POST"
@@ -93,8 +102,19 @@ extension LLMClient {
             "stream": stream,
             "messages": messages
         ]
+        
         if let temperature {
             body["temperature"] = temperature
+        }
+        
+        if let schemaJSON {
+            // turns it into a dictionary
+            let schema = try JSONSerialization.jsonObject(with: Data(schemaJSON.utf8))
+            
+            body["response_format"] = [
+                "type": "json_schema",
+                "json_schema": schema
+            ]
         }
 
         request.httpBody = try JSONSerialization.data(withJSONObject: body)

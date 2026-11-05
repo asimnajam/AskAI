@@ -1,1 +1,5 @@
 Secrets.swift
+# Xcode user-specific files
+xcuserdata/
+*.xcuserstate
+.DS_Store
