@@ -7,6 +7,7 @@
 
 import Testing
 @testable import LLMProject
+import Foundation
 
 struct PromptTemplateTests {
     @Test
@@ -64,5 +65,112 @@ struct PromptTemplateTests {
         #expect(throws: PromptError.missingField("id")) {
             try PromptTemplate.parse(markdownPrompt)
         }
+    }
+    
+    @Test
+    func replacePlaceholder() async throws {
+        let markdownPrompt = """
+            ---
+            id: match_summary
+            version: 1
+            ---
+            best player is {{allowed_player}}.
+            """
+        let promptTemplate = try PromptTemplate.parse(markdownPrompt)
+        let renderedText = try promptTemplate.rendered(with: ["allowed_player": "messi"])
+        
+        #expect(renderedText == "best player is messi.")
+    }
+    
+    @Test
+    func replaceSamePlaceholders() async throws {
+        let markdownPrompt = """
+            ---
+            id: match_summary
+            version: 1
+            ---
+            Players: {{allowed_player}}. Best player is {{allowed_player}}.
+            """
+        let promptTemplate = try PromptTemplate.parse(markdownPrompt)
+        let renderedText = try promptTemplate.rendered(with: ["allowed_player": "messi"])
+        
+        #expect(renderedText == "Players: messi. Best player is messi.")
+    }
+    
+    @Test
+    func replaceMultiplePlaceholders() async throws {
+        let markdownPrompt = """
+            ---
+            id: match_summary
+            version: 1
+            ---
+            Players: {{allowed_player}}. Best player is {{best_player}}.
+            """
+        let promptTemplate = try PromptTemplate.parse(markdownPrompt)
+        let renderedText = try promptTemplate.rendered(with: ["allowed_player": "messi, Saka", "best_player": "saka"])
+        
+        #expect(renderedText == "Players: messi, Saka. Best player is saka.")
+    }
+    
+    @Test
+    func noPlaceholders() async throws {
+        let markdownPrompt = """
+            ---
+            id: match_summary
+            version: 1
+            ---
+            Players: messi, Saka. Best player is saka.
+            """
+        let promptTemplate = try PromptTemplate.parse(markdownPrompt)
+        let renderedText = try promptTemplate.rendered(with: ["allowed_player": "messi, Saka", "best_player": "saka"])
+        
+        #expect(renderedText == "Players: messi, Saka. Best player is saka.")
+    }
+    
+    @Test
+    func missingValue() async throws {
+        let markdownPrompt = """
+            ---
+            id: match_summary
+            version: 1
+            ---
+            Players: {{allowed_player}}. Best player is {{best_player}}.
+            """
+        let promptTemplate = try PromptTemplate.parse(markdownPrompt)
+        
+        #expect(throws: PromptError.missingValue("best_player")) {
+            try promptTemplate.rendered(with: ["allowed_player": "messi"])
+        }
+    }
+    
+    @Test
+    func withExtraKeyShouldRenderSuccessfully() async throws {
+        let markdownPrompt = """
+            ---
+            id: match_summary
+            version: 1
+            ---
+            best player is {{allowed_player}}.
+            """
+        let promptTemplate = try PromptTemplate.parse(markdownPrompt)
+        let renderedText = try promptTemplate.rendered(with: ["allowed_player": "messi", "best_player": "saka"])
+        
+        #expect(renderedText == "best player is messi.")
+    }
+    
+    @Test
+    func bundledMatchSummaryPromptRendersCompletely() throws {
+        let url = try #require(Bundle.main.url(forResource: "match_summary", withExtension: "md"),
+                           "match_summary.md is missing from the app bundle")
+        let contents = try String(contentsOf: url, encoding: .utf8)
+        let template = try PromptTemplate.parse(contents)
+        #expect(template.id == "match_summary")
+        
+        let rendered = try template.rendered(with: [
+            "allowed_players": Match.sample.allPlayers.joined(separator: ", ")
+        ])
+
+        #expect(!rendered.contains("{{"))
+        #expect(rendered.contains("Saka"))
     }
 }

@@ -24,8 +24,13 @@ struct Match: Codable, Sendable {
         var detail: String? = nil
     }
 
+    struct TeamStat: Codable, Sendable, Equatable {
+        let home: Int
+        let away: Int
+    }
+    
     struct Stats: Codable, Sendable {
-        let possession: [Int]       // [home, away] in %
+        let possession: TeamStat       // [home, away] in %
         let shots: [Int]
         let shotsOnTarget: [Int]
         let corners: [Int]
@@ -64,7 +69,7 @@ extension Match {
             .init(minute: 88, type: .goal, side: .home, player: "Rice", detail: "Header from a corner. Assist: Ødegaard"),
         ],
         stats: .init(
-            possession: [58, 42],
+            possession: .init(home: 58, away: 42),
             shots: [16, 9],
             shotsOnTarget: [7, 3],
             corners: [8, 3]

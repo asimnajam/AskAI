@@ -18,6 +18,22 @@ struct PromptTemplate: Codable, Sendable {
     let id: String
     let version: Int
     let text: String
+    
+    func rendered(with values: [String: String]) throws -> String {
+        var renderedText = text
+        
+        for (key, value) in values {
+            renderedText = renderedText.replacingOccurrences(of: "{{\(key)}}", with: value)
+        }
+        
+        if let open = renderedText.range(of: "{{"),
+           let close = renderedText.range(of: "}}", range: open.upperBound..<renderedText.endIndex) {
+            let name = String(renderedText[open.upperBound..<close.lowerBound])
+            throw PromptError.missingValue(name)
+        }
+        
+        return renderedText
+    }
 }
 
 extension PromptTemplate {
@@ -62,19 +78,4 @@ extension PromptTemplate {
     }
 }
 
-enum PromptError: LocalizedError, Equatable {
-    case missingFrontMatter
-    case missingField(String)
-    case invalidVersion(String)
 
-    var errorDescription: String? {
-        switch self {
-        case .missingFrontMatter:
-            "The prompt file must start with a front matter block between '---' lines."
-        case .missingField(let name):
-            "The prompt file is missing the '\(name)' field."
-        case .invalidVersion(let value):
-            "The prompt version '\(value)' is not a whole number."
-        }
-    }
-}
