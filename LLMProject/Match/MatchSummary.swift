@@ -44,6 +44,34 @@ extension MatchSummary {
             throw SummaryError.invalidJSON
         }
     }
+    
+    /// The JSON Schema sent to Gemini: the "blank form" the answer must follow.
+    /// Built per match, so playerOfTheMatch can only be a player who actually played.
+    static func schemaJSON(for match: Match) -> String {
+        let schema: [String: Any] = [
+            "type": "object",
+            "properties": [
+                "headline": [
+                    "type": "string"
+                ],
+                "bullets": [
+                    "type": "array",
+                    "items": ["type": "string"]
+                ],
+                "keyStat": [
+                    "type": "string"
+                ],
+                "playerOfTheMatch": [
+                    "type": "string",
+                    "enum": match.allPlayers
+                ],
+            ],
+            "required": ["headline", "bullets", "keyStat", "playerOfTheMatch"],
+        ]
+        
+        let data = (try? JSONSerialization.data(withJSONObject: schema)) ?? Data()
+        return String(decoding: data, as: UTF8.self)
+    }
 }
 
 enum SummaryError: LocalizedError, Equatable {
