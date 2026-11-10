@@ -14,7 +14,7 @@ struct MatchSummary: Codable, Sendable {
     let playerOfTheMatch: String
     
     func validate(against match: Match) throws {
-        guard bullets.count == 3 else {
+        guard (3...4).contains(bullets.count) else {
             throw SummaryError.wrongBulletCount(bullets.count)
         }
         

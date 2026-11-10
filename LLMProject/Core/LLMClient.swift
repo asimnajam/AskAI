@@ -113,9 +113,17 @@ extension LLMClient {
             // turns it into a dictionary
             let schema = try JSONSerialization.jsonObject(with: Data(schemaJSON.utf8))
             
+//            body["response_format"] = [
+//                "type": "json_schema",
+//                "json_schema": schema
+//            ]
+            
             body["response_format"] = [
                 "type": "json_schema",
-                "json_schema": schema
+                "json_schema": [
+                    "name": "response",
+                    "schema": schema,
+                ],
             ]
         }
 
