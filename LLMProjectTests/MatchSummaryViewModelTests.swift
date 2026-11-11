@@ -58,7 +58,7 @@ struct MatchSummaryViewModelTests {
             Issue.record("Expected .failed, got \(viewModel.state)")
             return
         }
-        #expect(message == LLMError.invalidResponse.localizedDescription)
+        #expect(message == SummaryErrorMessage.generic)
     }
     
     @Test
@@ -72,7 +72,7 @@ struct MatchSummaryViewModelTests {
             Issue.record("Expected .loaded, got \(viewModel.state)")
             return
         }
-        #expect(error == SummaryError.invalidJSON.localizedDescription)
+        #expect(error == SummaryErrorMessage.unreliable)
     }
 }
 

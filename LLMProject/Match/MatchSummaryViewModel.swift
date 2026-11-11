@@ -53,8 +53,8 @@ final class MatchSummaryViewModel {
             state = .loaded(summary)
             print("✅ Valid summary: \(summary.headline)")
         } catch {
-            state = .failed(error.localizedDescription)
-            print("❌ \(error)")
+            state = .failed(SummaryErrorMessage.message(for: error))
+            print("❌ Summary failed: \(error)")
         }
     }
 }
