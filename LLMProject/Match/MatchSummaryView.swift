@@ -101,6 +101,32 @@ private struct MatchHeader: View {
     }
 }
 
-//#Preview {
-//    MatchSummaryView(match: .sample, client: MockLLMClient(behavior: .respond(sampleJSON)))
-//}
+#Preview("Summary") {
+    NavigationStack {
+        MatchSummaryView(
+            match: .sample,
+            client: MockLLMClient(behavior: .respond(MatchSummary.previewJSON))
+        )
+    }
+}
+
+#Preview("Error") {
+    NavigationStack {
+        MatchSummaryView(
+            match: .sample,
+            client: MockLLMClient(behavior: .fail(.invalidResponse))
+        )
+    }
+}
+
+#Preview("Slow") {
+    NavigationStack {
+        MatchSummaryView(
+            match: .sample,
+            client: MockLLMClient(
+                behavior: .respond(MatchSummary.previewJSON),
+                delay: .seconds(5)
+            )
+        )
+    }
+}

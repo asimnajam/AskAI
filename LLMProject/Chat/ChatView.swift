@@ -1,5 +1,4 @@
 import SwiftUI
-import Playgrounds
 import LLMKit
 
 struct ChatView: View {
@@ -36,5 +35,23 @@ struct ChatView: View {
             }
             .padding()
         }
+    }
+}
+
+#Preview("Chat") {
+    NavigationStack {
+        ChatView(
+            client: MockLLMClient(
+                behavior: .respond("Offside means an attacker is closer to the opponent's goal line than both the ball and the second-last defender when the ball is played to them.")
+            )
+        )
+        .navigationTitle("Chat")
+    }
+}
+
+#Preview("Chat error") {
+    NavigationStack {
+        ChatView(client: MockLLMClient(behavior: .fail(.invalidResponse)))
+            .navigationTitle("Chat")
     }
 }

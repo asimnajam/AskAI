@@ -31,21 +31,25 @@ final class MatchSummaryViewModel {
     }
     
     func generate() async {
-        guard case .idle = state else { return }
+        // Start from idle, or retry after a failure. Never while loading or already loaded.
+        switch state {
+        case .idle, .failed: break
+        case .loading, .loaded: return
+        }
         state = .loading
         do {
             let prompt = try await MatchSummaryPromptBuilder(promptStore: promptStore)
-                .build(for: .sample)
+                .build(for: match)
 
             let response = try await client.complete(
                 prompt,
-                schemaJSON: MatchSummary.schemaJSON(for: .sample),
+                schemaJSON: MatchSummary.schemaJSON(for: match),
                 temperature: 0.2
             )
             print("📦 \(response.content)")
 
             let summary = try MatchSummary.decode(from: response.content)
-            try summary.validate(against: .sample)
+            try summary.validate(against: match)
             state = .loaded(summary)
             print("✅ Valid summary: \(summary.headline)")
         } catch {
