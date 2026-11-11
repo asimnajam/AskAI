@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import LLMKit
 
 struct MatchSummaryPromptBuilder {
     let promptStore: PromptStore

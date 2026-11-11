@@ -14,12 +14,12 @@ import Foundation
 ///     version: 1
 ///     ---
 ///     Prompt text...
-struct PromptTemplate: Codable, Sendable {
-    let id: String
-    let version: Int
+public struct PromptTemplate: Codable, Sendable {
+    public let id: String
+    public let version: Int
     let text: String
     
-    func rendered(with values: [String: String]) throws -> String {
+    public func rendered(with values: [String: String]) throws -> String {
         var renderedText = text
         
         for (key, value) in values {

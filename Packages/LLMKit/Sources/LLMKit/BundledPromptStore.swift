@@ -7,14 +7,14 @@
 
 import Foundation
 
-struct BundledPromptStore: PromptStore {
+public struct BundledPromptStore: PromptStore {
     private let bundle: Bundle
     
-    init(bundle: Bundle = .main) {
+    public init(bundle: Bundle = .main) {
         self.bundle = bundle
     }
     
-    func template(for id: String) async throws -> PromptTemplate {
+    public func template(for id: String) async throws -> PromptTemplate {
         guard let url = bundle.url(forResource: id, withExtension: "md") else {
             throw PromptError.fileNotFound(id)
         }

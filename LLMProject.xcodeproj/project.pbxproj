@@ -6,6 +6,11 @@
 	objectVersion = 90;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		2F2E172930A482AF00101244 /* LLMKit in Frameworks */ = {isa = PBXBuildFile; productRef = 2F2E172830A482AF00101244 /* LLMKit */; };
+		2FE1B34F30A4877C0021A1C7 /* LLMKit in Frameworks */ = {isa = PBXBuildFile; productRef = 2FE1B34E30A4877C0021A1C7 /* LLMKit */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		2F775852309C93A000439823 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -27,6 +32,11 @@
 			path = LLMProject;
 			sourceTree = "<group>";
 		};
+		2F2E172A30A4871400101244 /* Packages */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Packages;
+			sourceTree = "<group>";
+		};
 		2F77584F309C93A000439823 /* LLMProjectTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = LLMProjectTests;
@@ -38,6 +48,8 @@
 		000000000000000130000000 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			files = (
+				2F2E172930A482AF00101244 /* LLMKit in Frameworks */,
+				2FE1B34F30A4877C0021A1C7 /* LLMKit in Frameworks */,
 			);
 		};
 		2F77584B309C939F00439823 /* Frameworks */ = {
@@ -51,8 +63,10 @@
 		000000000000000000000001 = {
 			isa = PBXGroup;
 			children = (
+				2F2E172A30A4871400101244 /* Packages */,
 				000000000000000000000010 /* LLMProject */,
 				2F77584F309C93A000439823 /* LLMProjectTests */,
+				2F2E172730A482AF00101244 /* Frameworks */,
 				000000000000000000000020 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -64,6 +78,13 @@
 				2F77584E309C939F00439823 /* ShoppingAppTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		2F2E172730A482AF00101244 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -81,8 +102,13 @@
 			);
 			fileSystemSynchronizedGroups = (
 				000000000000000000000010 /* LLMProject */,
+				2F2E172A30A4871400101244 /* Packages */,
 			);
 			name = LLMProject;
+			packageProductDependencies = (
+				2F2E172830A482AF00101244 /* LLMKit */,
+				2FE1B34E30A4877C0021A1C7 /* LLMKit */,
+			);
 			productName = MyApp;
 			productReference = 000000000000000000000120 /* LLMProject.app */;
 			productType = "com.apple.product-type.application";
@@ -136,6 +162,9 @@
 			);
 			mainGroup = 000000000000000000000001;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				2FE1B34D30A4877C0021A1C7 /* XCLocalSwiftPackageReference "Packages/LLMKit" */,
+			);
 			preferredProjectObjectVersion = 90;
 			productRefGroup = 000000000000000000000020 /* Products */;
 			projectDirPath = "";
@@ -463,6 +492,24 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		2FE1B34D30A4877C0021A1C7 /* XCLocalSwiftPackageReference "Packages/LLMKit" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/LLMKit;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		2F2E172830A482AF00101244 /* LLMKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = LLMKit;
+		};
+		2FE1B34E30A4877C0021A1C7 /* LLMKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = LLMKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 000000000000000000000000 /* Project object */;
 }

@@ -7,6 +7,7 @@
 
 import Foundation
 import Observation
+import LLMKit
 
 @MainActor @Observable
 final class ChatViewModel {

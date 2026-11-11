@@ -6,56 +6,7 @@
 //
 
 import SwiftUI
-
-//struct MatchSummaryView: View {
-//    @State private var viewModel: MatchSummaryViewModel
-//    
-//    init(match: Match, client: LLMProviding) {
-//        _viewModel = State(initialValue: MatchSummaryViewModel(match: match, client: client))
-//    }
-//    var body: some View {
-//        ScrollView {
-//            summarySection
-//                .task {
-//                    await viewModel.generate()
-//                }
-//        }
-//    }
-//    
-//    @ViewBuilder
-//    private var summarySection: some View {
-//        switch viewModel.state {
-//        case .idle:
-//            Text("....")
-//        case .loading:
-//            ProgressView {
-//                Text("Loading...")
-//            }
-//        case .failed(let error):
-//            Text(error)
-//        case .loaded(let summary):
-//            VStack(alignment: .leading) {
-//                LabeledContent("Headline", value: summary.headline)
-//                LabeledContent("Stat", value: summary.keyStat)
-//                LabeledContent("Player Of The Match", value: summary.playerOfTheMatch)
-//                summaryBullets(summary)
-//            }
-//        }
-//    }
-//    
-//    private func summaryBullets(_ summary: MatchSummary) -> some View {
-//        LazyVStack(alignment: .leading) {
-//            ForEach(summary.bullets, id: \.self) { bullet in
-//                Text("• \(bullet)")
-//                    .font(.body)
-//                    .foregroundStyle(.primary)
-//            }
-//        }
-//        .padding()
-//    }
-//}
-
-import SwiftUI
+import LLMKit
 
 struct MatchSummaryView: View {
     @State private var viewModel: MatchSummaryViewModel

@@ -8,7 +8,7 @@
 import Foundation
 
 /// Talks to any OpenAI-compatible chat API (Gemini, OpenAI, Ollama...).
-struct LLMClient: LLMProviding, Sendable {
+public struct LLMClient: Sendable {
     let endpoint: URL
     let apiKey: String
     let timeout: TimeInterval
@@ -16,7 +16,7 @@ struct LLMClient: LLMProviding, Sendable {
     /// or overloaded (503), the next one is used.
     let models: [String]
     
-    init(endpoint: URL, apiKey: String, timeout: TimeInterval, models: [String]) {
+    public init(endpoint: URL, apiKey: String, timeout: TimeInterval, models: [String]) {
         self.endpoint = endpoint
         self.apiKey = apiKey
         self.timeout = timeout
@@ -69,7 +69,7 @@ extension LLMClient {
                 lastError = error
                 continue
             }
-
+            
             guard let http = response as? HTTPURLResponse else { throw LLMError.invalidResponse }
             if http.statusCode == 200 {
                 print("✅ Using \(model)")
@@ -89,7 +89,7 @@ extension LLMClient {
         }
         throw lastError
     }
-
+    
     private func makeRequest(
         model: String,
         messages: [[String: String]],
@@ -125,12 +125,14 @@ extension LLMClient {
                 ],
             ]
         }
-
+        
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
         return request
     }
-    
-    func stream(_ history: [ChatMessage], system: String) -> AsyncThrowingStream<String, Error> {
+}
+
+extension LLMClient: LLMProviding {
+    public func stream(_ history: [ChatMessage], system: String) -> AsyncThrowingStream<String, Error> {
         // The model has no memory: the whole conversation is sent every time.
         let messages = [
             ["role": "system", "content": system]
@@ -162,7 +164,7 @@ extension LLMClient {
         }
     }
     
-    func complete(
+    public func complete(
         _ prompt: LLMPrompt,
         schemaJSON: String? = nil,
         temperature: Double? = nil

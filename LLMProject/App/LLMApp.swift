@@ -1,4 +1,5 @@
 import SwiftUI
+import LLMKit
 
 @main struct LLMApp: App {
     let client: LLMClient = .init(

@@ -1,5 +1,6 @@
 import SwiftUI
 import Playgrounds
+import LLMKit
 
 struct ChatView: View {
     @State private var viewModel: ChatViewModel

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import LLMKit
 
 struct MessageBubble: View {
     let message: ChatMessage
