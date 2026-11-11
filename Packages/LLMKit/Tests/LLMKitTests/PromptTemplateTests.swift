@@ -157,4 +157,23 @@ struct PromptTemplateTests {
         
         #expect(renderedText == "best player is messi.")
     }
+
+    @Test(arguments: [
+        "id: chat_assistant",       // plain
+        "id: \"chat_assistant\"",   // double quotes
+        "id: 'chat_assistant'",     // single quotes
+    ])
+    func parsesQuotedAndUnquotedIDs(idLine: String) throws {
+        let markdownPrompt = """
+            ---
+            \(idLine)
+            version: "2"
+            ---
+            Hello
+            """
+        let template = try PromptTemplate.parse(markdownPrompt)
+
+        #expect(template.id == "chat_assistant")
+        #expect(template.version == 2)
+    }
 }

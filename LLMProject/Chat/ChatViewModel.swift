@@ -26,7 +26,8 @@ final class ChatViewModel {
         self.client = client
     }
 
-    private let systemPrompt = "You are a friendly football expert. Keep answers short and clear."
+    private let systemPrompt = "You are a friendly football poet, Write poem in 2-3 lines"
+//    "You are a friendly football expert. Keep answers short and clear."
 //    private let systemPrompt = """
 //    You are a friendly football expert. Keep answers short and clear.
 //    Reply in plain text only. Do not use Markdown formatting.

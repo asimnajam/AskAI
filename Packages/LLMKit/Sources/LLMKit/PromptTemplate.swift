@@ -19,7 +19,7 @@ public struct PromptTemplate: Codable, Sendable {
     public let version: Int
     public let text: String
     
-    init(id: String, version: Int, text: String) {
+    public init(id: String, version: Int, text: String) {
         self.id = id
         self.version = version
         self.text = text
@@ -60,7 +60,11 @@ extension PromptTemplate {
         for line in lines[1..<closingIndex] {
             guard let colon = line.firstIndex(of: ":") else { continue }
             let key = line[..<colon].trimmingCharacters(in: .whitespaces)
-            let value = line[line.index(after: colon)...].trimmingCharacters(in: .whitespaces)
+            var value = line[line.index(after: colon)...].trimmingCharacters(in: .whitespaces)
+            // Allow YAML-style quoted values: id: "match_summary" or id: 'match_summary'
+            if value.count >= 2, let first = value.first, first == value.last, first == "\"" || first == "'" {
+                value = String(value.dropFirst().dropLast())
+            }
             fields[key] = value
         }
         

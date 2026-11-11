@@ -7,4 +7,5 @@
 
 enum PromptID: String, CaseIterable {
     case matchSummary = "match_summary"
+    case chatAssistant = "chat_assistant"
 }
