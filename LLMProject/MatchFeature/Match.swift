@@ -30,10 +30,10 @@ struct Match: Codable, Sendable {
     }
     
     struct Stats: Codable, Sendable {
-        let possession: TeamStat       // [home, away] in %
-        let shots: [Int]
-        let shotsOnTarget: [Int]
-        let corners: [Int]
+        let possession: TeamStat
+        let shots: TeamStat
+        let shotsOnTarget: TeamStat
+        let corners: TeamStat
     }
 
     let competition: String
@@ -70,9 +70,9 @@ extension Match {
         ],
         stats: .init(
             possession: .init(home: 58, away: 42),
-            shots: [16, 9],
-            shotsOnTarget: [7, 3],
-            corners: [8, 3]
+            shots: .init(home: 16, away: 9),
+            shotsOnTarget: .init(home: 7, away: 3),
+            corners: .init(home: 8, away: 3)
         )
     )
 }

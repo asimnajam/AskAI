@@ -26,15 +26,15 @@ public struct LLMClient: Sendable {
     
     // MARK: - Wire format
     
-    private struct Body: Encodable {
-        struct Message: Encodable {
-            let role: String
-            let content: String
-        }
-        let model: String
-        let stream: Bool
-        let messages: [Message]
-    }
+//    private struct Body: Encodable {
+//        struct Message: Encodable {
+//            let role: String
+//            let content: String
+//        }
+//        let model: String
+//        let stream: Bool
+//        let messages: [Message]
+//    }
     
     private struct Chunk: Decodable {
         struct Choice: Decodable {

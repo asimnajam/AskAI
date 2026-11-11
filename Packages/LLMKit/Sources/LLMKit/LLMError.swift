@@ -7,11 +7,11 @@
 
 import Foundation
 
-enum LLMError: LocalizedError {
+public enum LLMError: LocalizedError {
     case http(status: Int, model: String)
     case invalidResponse
 
-    var errorDescription: String? {
+    public var errorDescription: String? {
         switch self {
         case .http(let status, let model):
             "Request to \(model) failed (HTTP \(status))"

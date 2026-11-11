@@ -1,0 +1,31 @@
+{
+  "configurations" : [
+    {
+      "id" : "190B0362-FD79-48DB-9062-6B5B7A6FF0B4",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:Packages\/LLMKit",
+        "identifier" : "LLMKitTests",
+        "name" : "LLMKitTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:LLMProject.xcodeproj",
+        "identifier" : "2F77584D309C939F00439823",
+        "name" : "ShoppingAppTests"
+      }
+    }
+  ],
+  "version" : 1
+}

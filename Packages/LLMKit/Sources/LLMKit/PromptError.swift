@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum PromptError: LocalizedError, Equatable {
+public enum PromptError: LocalizedError, Equatable {
     case missingFrontMatter
     case missingField(String)
     case invalidVersion(String)
@@ -15,7 +15,7 @@ enum PromptError: LocalizedError, Equatable {
     case fileNotFound(String)
     case idMismatch(expected: String, found: String)
     
-    var errorDescription: String? {
+    public var errorDescription: String? {
         switch self {
         case .missingFrontMatter:
             "The prompt file must start with a front matter block between '---' lines."

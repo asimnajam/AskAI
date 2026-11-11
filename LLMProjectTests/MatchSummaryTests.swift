@@ -71,7 +71,12 @@ struct MatchSummaryTests {
         // Act
         let matchSummary = try MatchSummary.decode(from: text)
         
-        let stats = Match.Stats(possession: Match.TeamStat(home: 0, away: 0), shots: [], shotsOnTarget: [], corners: [])
+        let stats = Match.Stats(
+            possession: Match.TeamStat(home: 0, away: 0),
+            shots: .init(home: 0, away: 0),
+            shotsOnTarget: .init(home: 0, away: 0),
+            corners: .init(home: 0, away: 0)
+        )
         let match = Match(competition: "", date: "", homeTeam: "", awayTeam: "", homeScore: 0, awayScore: 0, homeSquad: ["Saka", "Ronaldo"], awaySquad: [], events: [], stats: stats)
         
         #expect(throws: Never.self) {
@@ -91,7 +96,12 @@ struct MatchSummaryTests {
         // Act
         let matchSummary = try MatchSummary.decode(from: text)
         
-        let stats = Match.Stats(possession: Match.TeamStat(home: 0, away: 0), shots: [], shotsOnTarget: [], corners: [])
+        let stats = Match.Stats(
+            possession: Match.TeamStat(home: 0, away: 0),
+            shots: .init(home: 0, away: 0),
+            shotsOnTarget: .init(home: 0, away: 0),
+            corners: .init(home: 0, away: 0)
+        )
         let match = Match(competition: "", date: "", homeTeam: "", awayTeam: "", homeScore: 0, awayScore: 0, homeSquad: ["Saka", "Ronaldo"], awaySquad: [], events: [], stats: stats)
         
         #expect(throws: SummaryError.wrongBulletCount(matchSummary.bullets.count)) {
@@ -111,7 +121,12 @@ struct MatchSummaryTests {
         // Act
         let matchSummary = try MatchSummary.decode(from: text)
         
-        let stats = Match.Stats(possession: Match.TeamStat(home: 0, away: 0), shots: [], shotsOnTarget: [], corners: [])
+        let stats = Match.Stats(
+            possession: Match.TeamStat(home: 0, away: 0),
+            shots: .init(home: 0, away: 0),
+            shotsOnTarget: .init(home: 0, away: 0),
+            corners: .init(home: 0, away: 0)
+        )
         let match = Match(competition: "", date: "", homeTeam: "", awayTeam: "", homeScore: 0, awayScore: 0, homeSquad: ["Saka", "Ronaldo"], awaySquad: [], events: [], stats: stats)
         
         #expect(throws: SummaryError.bulletTooLong(matchSummary.bullets[0])) {
@@ -131,7 +146,12 @@ struct MatchSummaryTests {
         // Act
         let matchSummary = try MatchSummary.decode(from: text)
         
-        let stats = Match.Stats(possession: Match.TeamStat(home: 0, away: 0), shots: [], shotsOnTarget: [], corners: [])
+        let stats = Match.Stats(
+            possession: Match.TeamStat(home: 0, away: 0),
+            shots: .init(home: 0, away: 0),
+            shotsOnTarget: .init(home: 0, away: 0),
+            corners: .init(home: 0, away: 0)
+        )
         let match = Match(competition: "", date: "", homeTeam: "", awayTeam: "", homeScore: 0, awayScore: 0, homeSquad: ["Saka", "Ronaldo"], awaySquad: [], events: [], stats: stats)
         
         #expect(throws: SummaryError.unknownPlayer(matchSummary.playerOfTheMatch)) {

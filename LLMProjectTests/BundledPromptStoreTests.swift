@@ -7,6 +7,7 @@
 
 import Testing
 import Foundation
+import LLMKit
 @testable import LLMProject
 
 private final class TestBundleToken {}

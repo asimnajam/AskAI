@@ -17,7 +17,13 @@ import Foundation
 public struct PromptTemplate: Codable, Sendable {
     public let id: String
     public let version: Int
-    let text: String
+    public let text: String
+    
+    init(id: String, version: Int, text: String) {
+        self.id = id
+        self.version = version
+        self.text = text
+    }
     
     public func rendered(with values: [String: String]) throws -> String {
         var renderedText = text
