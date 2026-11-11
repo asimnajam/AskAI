@@ -11,7 +11,7 @@ struct MatchSummaryPromptBuilder {
     let promptStore: PromptStore
     
     func build(for match: Match) async throws -> LLMPrompt {
-        let template = try await promptStore.template(for: .matchSummary)
+        let template = try await promptStore.template(for: "match_summary")
         let system = try template.rendered(with: ["allowed_players": match.allPlayers.joined(separator: ", ")])
         
         let jsonEncoder = JSONEncoder()

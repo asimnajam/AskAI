@@ -8,14 +8,25 @@
 import Foundation
 
 /// Talks to any OpenAI-compatible chat API (Gemini, OpenAI, Ollama...).
-struct LLMClient: Sendable {
-    var endpoint = URL(string: "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions")!
-    var apiKey = Secrets.geminiKey
-    var timeout: TimeInterval = 20   // seconds
+struct LLMClient: LLMProviding, Sendable {
+    let endpoint: URL
+//    = URL(string: "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions")!
+    let apiKey: String
+//    = Secrets.geminiKey
+    let timeout: TimeInterval
+//    = 20   // seconds
     
     /// Tried in order. If a model is retired (404), rate-limited (429)
     /// or overloaded (503), the next one is used.
-    var models = ["gemini-flash-lite-latest", "gemini-3.5-flash", "gemini-3.8-flash"]
+    let models: [String]
+//    = ["gemini-flash-lite-latest", "gemini-3.5-flash", "gemini-3.8-flash"]
+    
+    init(endpoint: URL, apiKey: String, timeout: TimeInterval, models: [String]) {
+        self.endpoint = endpoint
+        self.apiKey = apiKey
+        self.timeout = timeout
+        self.models = models
+    }
     private static let tryNextModelStatuses: Set<Int> = [404, 429, 503]
     
     // MARK: - Wire format
@@ -45,8 +56,6 @@ struct LLMClient: Sendable {
         }
         let choices: [Choice]
     }
-    
-    
 }
 
 extension LLMClient {
@@ -112,11 +121,6 @@ extension LLMClient {
         if let schemaJSON {
             // turns it into a dictionary
             let schema = try JSONSerialization.jsonObject(with: Data(schemaJSON.utf8))
-            
-//            body["response_format"] = [
-//                "type": "json_schema",
-//                "json_schema": schema
-//            ]
             
             body["response_format"] = [
                 "type": "json_schema",

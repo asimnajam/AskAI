@@ -10,5 +10,5 @@ enum PromptID: String, CaseIterable {
 }
 
 protocol PromptStore: Sendable {
-    func template(for id: PromptID) async throws -> PromptTemplate
+    func template(for id: String) async throws -> PromptTemplate
 }

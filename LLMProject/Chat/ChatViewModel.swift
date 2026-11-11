@@ -10,18 +10,36 @@ import Observation
 
 @MainActor @Observable
 final class ChatViewModel {
-    var messages: [ChatMessage] = []
+    private(set) var messages: [ChatMessage] = []
     var input = ""
-    var isStreaming = false
+    private(set) var isStreaming = false
 
     private var task: Task<Void, Never>?
-    private let client = LLMClient()
+    private let client: LLMProviding
+    
+    var primaryActionTitle: String {
+        isStreaming ? "Stop" : "Send"
+    }
+    
+    init(client: LLMProviding) {
+        self.client = client
+    }
+
     private let systemPrompt = "You are a friendly football expert. Keep answers short and clear."
 //    private let systemPrompt = """
 //    You are a friendly football expert. Keep answers short and clear.
 //    Reply in plain text only. Do not use Markdown formatting.
 //    """
-    func send() {
+    
+    func primaryActionTapped() {
+        if isStreaming {
+            stop()
+        } else {
+            send()
+        }
+    }
+
+    private func send() {
         let text = input.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty, !isStreaming else { return }
 
@@ -44,7 +62,7 @@ final class ChatViewModel {
         }
     }
 
-    func stop() {
+    private func stop() {
         task?.cancel()
     }
 }

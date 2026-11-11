@@ -27,9 +27,9 @@
 			path = LLMProject;
 			sourceTree = "<group>";
 		};
-		2F77584F309C93A000439823 /* ShoppingAppTests */ = {
+		2F77584F309C93A000439823 /* LLMProjectTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = ShoppingAppTests;
+			path = LLMProjectTests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -52,7 +52,7 @@
 			isa = PBXGroup;
 			children = (
 				000000000000000000000010 /* LLMProject */,
-				2F77584F309C93A000439823 /* ShoppingAppTests */,
+				2F77584F309C93A000439823 /* LLMProjectTests */,
 				000000000000000000000020 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -101,7 +101,7 @@
 				2F775853309C93A000439823 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				2F77584F309C93A000439823 /* ShoppingAppTests */,
+				2F77584F309C93A000439823 /* LLMProjectTests */,
 			);
 			name = ShoppingAppTests;
 			productName = ShoppingAppTests;
