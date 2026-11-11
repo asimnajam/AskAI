@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2F2E172930A482AF00101244 /* LLMKit in Frameworks */ = {isa = PBXBuildFile; productRef = 2F2E172830A482AF00101244 /* LLMKit */; };
 		2FE1B34F30A4877C0021A1C7 /* LLMKit in Frameworks */ = {isa = PBXBuildFile; productRef = 2FE1B34E30A4877C0021A1C7 /* LLMKit */; };
 /* End PBXBuildFile section */
 
@@ -27,9 +26,25 @@
 		2FE1B35030A492920021A1C7 /* LLMProject.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = LLMProject.xctestplan; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		2FE1B36930A4A0B90021A1C7 /* Exceptions for "LLMProject" folder in "LLMProject" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Config/Base.xcconfig,
+				Config/Secrets.example.xcconfig,
+				Config/Secrets.xcconfig,
+				Info.plist,
+			);
+			target = 000000000000000100000000 /* LLMProject */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		000000000000000000000010 /* LLMProject */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				2FE1B36930A4A0B90021A1C7 /* Exceptions for "LLMProject" folder in "LLMProject" target */,
+			);
 			path = LLMProject;
 			sourceTree = "<group>";
 		};
@@ -49,7 +64,6 @@
 		000000000000000130000000 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			files = (
-				2F2E172930A482AF00101244 /* LLMKit in Frameworks */,
 				2FE1B34F30A4877C0021A1C7 /* LLMKit in Frameworks */,
 			);
 		};
@@ -108,7 +122,6 @@
 			);
 			name = LLMProject;
 			packageProductDependencies = (
-				2F2E172830A482AF00101244 /* LLMKit */,
 				2FE1B34E30A4877C0021A1C7 /* LLMKit */,
 			);
 			productName = MyApp;
@@ -347,6 +360,8 @@
 		};
 		000000000000000111000000 /* Debug configuration for PBXNativeTarget "LLMProject" */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 000000000000000000000010 /* LLMProject */;
+			baseConfigurationReferenceRelativePath = Config/Base.xcconfig;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -355,6 +370,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = LLMProject/Info.plist;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -385,6 +401,8 @@
 		};
 		000000000000000112000000 /* Release configuration for PBXNativeTarget "LLMProject" */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 000000000000000000000010 /* LLMProject */;
+			baseConfigurationReferenceRelativePath = Config/Base.xcconfig;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -393,6 +411,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = LLMProject/Info.plist;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -503,10 +522,6 @@
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		2F2E172830A482AF00101244 /* LLMKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = LLMKit;
-		};
 		2FE1B34E30A4877C0021A1C7 /* LLMKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = LLMKit;

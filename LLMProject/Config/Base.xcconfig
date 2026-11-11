@@ -1,0 +1,15 @@
+//
+//  Base.xcconfig
+//  LLMProject
+//
+//  Created by Syed Asim Najam on 11/11/2026.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://developer.apple.com/documentation/xcode/adding-a-build-configuration-file-to-your-project
+
+// Default: no key → the app runs in demo mode.
+GEMINI_API_KEY =
+
+// Your real key, if the file exists. The "?" means: don't fail if it's missing.
+#include? "Secrets.xcconfig"
