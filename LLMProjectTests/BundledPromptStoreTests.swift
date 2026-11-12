@@ -17,7 +17,7 @@ struct BundledPromptStoreTests {
     func everyPromptLoadsFromAppBundle(id: PromptID) async throws {
         let store = BundledPromptStore()
 
-        let template = try await store.template(for: PromptID.matchSummary.rawValue)
+        let template = try await store.template(for: id.rawValue)
 
         #expect(template.id == id.rawValue)
         #expect(template.version >= 1)
