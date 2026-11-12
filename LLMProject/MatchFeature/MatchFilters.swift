@@ -112,3 +112,20 @@ extension MatchFilters {
         return String(decoding: data, as: UTF8.self)
     }
 }
+
+extension MatchFilters {
+    /// True if every name in the filters (team, competition, scorer) exists in the data.
+    /// The schema already limits names, but the on-device fallback ignores the schema,
+    /// so this check is the real guarantee.
+    func usesOnlyKnownNames(_ vocabulary: SearchVocabulary) -> Bool {
+        isKnown(team, in: vocabulary.teams)
+            && isKnown(competition, in: vocabulary.competitions)
+            && isKnown(scorer, in: vocabulary.players)
+    }
+
+    /// A name that isn't set (nil) is always fine; a set name must be in the list.
+    private func isKnown(_ name: String?, in allowed: [String]) -> Bool {
+        guard let name else { return true }
+        return allowed.contains { $0.caseInsensitiveCompare(name) == .orderedSame }
+    }
+}
