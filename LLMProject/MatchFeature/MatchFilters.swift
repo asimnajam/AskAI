@@ -8,12 +8,12 @@
 import Foundation
 
 struct MatchFilters: Codable, Sendable, Equatable {
-    enum Venue: String, Codable, Sendable {
+    enum Venue: String, Codable, Sendable, CaseIterable {
         case home
         case away
     }
     
-    enum Result: String, Codable, Sendable {
+    enum Result: String, Codable, Sendable, CaseIterable {
         case win
         case draw
         case loss
@@ -78,5 +78,37 @@ extension MatchFilters {
         }
 
         return true
+    }
+}
+
+extension MatchFilters {
+    /// The JSON Schema the AI's answer must follow.
+        /// Names are limited to the real ones in `vocabulary`; every field is optional.
+    static func schemaJSON(vocabulary: SearchVocabulary) -> String {
+        var properties: [String: Any] = [
+            "venue": ["type": "string", "enum": Venue.allCases.map(\.rawValue)],
+            "result": ["type": "string", "enum": Result.allCases.map(\.rawValue)],
+            "bothTeamsScored": ["type": "boolean"],
+            "hasRedCard": ["type": "boolean"],
+            "minTotalGoals": ["type": "integar", "minimum": "0"]
+        ]
+        
+        if !vocabulary.teams.isEmpty {
+            properties["team"] = ["type": "string", "enum": vocabulary.teams]
+        }
+        
+        if !vocabulary.competitions.isEmpty {
+            properties["competitions"] = ["type": "string", "enum": vocabulary.competitions]
+        }
+        
+        if !vocabulary.players.isEmpty {
+            properties["scorer"] = ["type": "string", "enum": vocabulary.players]
+        }
+        
+        // No "required": the model includes only what the user asked for.
+        let schema: [String: Any] = ["type": "object", "properties": properties]
+        
+        let data = (try? JSONSerialization.data(withJSONObject: schema, options: .sortedKeys)) ?? Data()
+        return String(decoding: data, as: UTF8.self)
     }
 }
