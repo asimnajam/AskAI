@@ -5,8 +5,16 @@ import LLMKit
 struct LLMApp: App {
     private let chatClient: any LLMProviding
     private let summaryClient: any LLMProviding
+    private let matches: [Match]
 
     init() {
+        do {
+            matches = try MatchStore().loadMatches()
+        } catch {
+            print("❌ Couldn't load matches: \(error)")
+            matches = [.sample]
+        }
+
         if let key = AppConfig.geminiKey {
             // A key is configured: both features share the real client.
             let gemini = LLMClient(
@@ -38,9 +46,9 @@ struct LLMApp: App {
                     }
                 }
 
-                Tab("Match", systemImage: "sportscourt") {
+                Tab("Matches", systemImage: "sportscourt") {
                     NavigationStack {
-                        MatchSummaryView(match: .sample, client: summaryClient)
+                        MatchListView(matches: matches, client: summaryClient)
                             .demoBadge()
                     }
                 }

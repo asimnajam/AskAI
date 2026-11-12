@@ -9,14 +9,14 @@ import Foundation
 
 /// The real data the AI is allowed to use. The model never "knows" the match:
 /// we send these facts with every request.
-struct Match: Codable, Sendable {
+struct Match: Codable, Sendable, Hashable, Identifiable {
     enum Side: String, Codable, Sendable { case home, away }
 
     enum EventType: String, Codable, Sendable {
         case goal, penaltyGoal, yellowCard, redCard
     }
 
-    struct Event: Codable, Sendable {
+    struct Event: Codable, Sendable, Hashable {
         let minute: Int
         let type: EventType
         let side: Side
@@ -24,18 +24,20 @@ struct Match: Codable, Sendable {
         var detail: String? = nil
     }
 
-    struct TeamStat: Codable, Sendable, Equatable {
+    struct TeamStat: Codable, Sendable, Hashable {
         let home: Int
         let away: Int
     }
     
-    struct Stats: Codable, Sendable {
+    struct Stats: Codable, Sendable, Hashable {
         let possession: TeamStat
         let shots: TeamStat
         let shotsOnTarget: TeamStat
         let corners: TeamStat
     }
 
+    /// Stable identifier, e.g. "ars-che-2026-10-18". Used for lists and navigation.
+    var id: String = UUID().uuidString
     let competition: String
     let date: String
     let homeTeam: String
@@ -53,6 +55,7 @@ struct Match: Codable, Sendable {
 extension Match {
     /// Fictional sample match for development.
     static let sample = Match(
+        id: "ars-che-2026-10-18",
         competition: "Premier League",
         date: "2026-10-18",
         homeTeam: "Arsenal",
