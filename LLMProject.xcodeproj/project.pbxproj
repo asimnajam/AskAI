@@ -58,6 +58,11 @@
 			path = LLMProjectTests;
 			sourceTree = "<group>";
 		};
+		2FE1B3F730A5E69A0021A1C7 /* Docs */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Docs;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,6 +83,7 @@
 		000000000000000000000001 = {
 			isa = PBXGroup;
 			children = (
+				2FE1B3F730A5E69A0021A1C7 /* Docs */,
 				2FE1B35030A492920021A1C7 /* LLMProject.xctestplan */,
 				2F2E172A30A4871400101244 /* Packages */,
 				000000000000000000000010 /* LLMProject */,
@@ -119,6 +125,7 @@
 			fileSystemSynchronizedGroups = (
 				000000000000000000000010 /* LLMProject */,
 				2F2E172A30A4871400101244 /* Packages */,
+				2FE1B3F730A5E69A0021A1C7 /* Docs */,
 			);
 			name = LLMProject;
 			packageProductDependencies = (
