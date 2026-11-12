@@ -79,3 +79,33 @@ extension Match {
         )
     )
 }
+
+extension Match {
+    /// Whether `team` played at home or away, or nil if it didn't play.
+    func side(of team: String) -> Side? {
+        if homeTeam.caseInsensitiveCompare(team) == .orderedSame { return .home }
+        if awayTeam.caseInsensitiveCompare(team) == .orderedSame { return .away }
+        return nil
+    }
+
+    var totalGoals: Int { homeScore + awayScore }
+
+    var hasRedCard: Bool { events.contains { $0.type == .redCard } }
+
+    /// Players who scored, including penalties.
+    var scorers: [String] {
+        events
+            .filter { $0.type == .goal || $0.type == .penaltyGoal }
+            .map(\.player)
+    }
+
+    /// The result from one team's point of view.
+    /// Without a team, only `.draw` can be answered.
+    func has(_ result: MatchFilters.Result, for side: Side?) -> Bool {
+        if result == .draw { return homeScore == awayScore }
+        guard let side else { return true }   // win/loss without a team: don't filter
+
+        let (own, other) = side == .home ? (homeScore, awayScore) : (awayScore, homeScore)
+        return result == .win ? own > other : own < other
+    }
+}
