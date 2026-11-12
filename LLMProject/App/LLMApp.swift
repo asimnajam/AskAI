@@ -8,15 +8,17 @@ struct LLMApp: App {
 
     init() {
         if let key = AppConfig.geminiKey {
-            // A key is configured: both features share the real Gemini client.
+            // A key is configured: both features share the real client.
             let gemini = LLMClient(
                 endpoint: URL(string: "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions")!,
                 apiKey: key,
                 timeout: 20,
                 models: ["gemini-flash-lite-latest", "gemini-3.5-flash", "gemini-3.8-flash"]
             )
-            chatClient = gemini
-            summaryClient = gemini
+            // Gemini first; Apple's on-device model if Gemini fails (e.g. offline).
+            let client = FallbackLLMClient(primary: gemini, fallback: OnDeviceLLMClient())
+            chatClient = client
+            summaryClient = client
         } else {
             // No key (e.g. a fresh clone): demo mode with sample answers per feature.
             print("ℹ️ No GEMINI_API_KEY found, running in demo mode")

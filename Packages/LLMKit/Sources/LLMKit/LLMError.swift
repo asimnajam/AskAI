@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum LLMError: LocalizedError {
+public enum LLMError: LocalizedError, Equatable {
     case http(status: Int, model: String)
     case invalidResponse
 
