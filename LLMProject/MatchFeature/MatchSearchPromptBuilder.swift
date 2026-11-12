@@ -18,9 +18,9 @@ struct MatchSearchPromptBuilder {
         let vocabulary = SearchVocabulary(matches: matches)
         let template = try await promptStore.template(for: PromptID.matchSearch.rawValue)
         let system = try template.rendered(with: [
-            "teams": vocabulary.teams.joined(separator: ","),
-            "competitions": vocabulary.competitions.joined(separator: ","),
-            "players": vocabulary.players.joined(separator: ",")
+            "teams": vocabulary.teams.joined(separator: ", "),
+            "competitions": vocabulary.competitions.joined(separator: ", "),
+            "players": vocabulary.players.joined(separator: ", ")
         ])
         
         return LLMPrompt(
