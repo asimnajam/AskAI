@@ -24,9 +24,23 @@ struct ChatView: View {
 
             VStack(alignment: .trailing, spacing: 4) {
                 HStack(alignment: .bottom) {
-                    TextField("Ask something…", text: $viewModel.input, axis: .vertical)
-                        .textFieldStyle(.roundedBorder)
-                        .lineLimit(1...4)
+                    VStack(alignment: .leading) {
+                        TextField("Ask something…", text: $viewModel.input, axis: .vertical)
+                            .textFieldStyle(.roundedBorder)
+                            .lineLimit(1...4)
+                        if viewModel.remainingCharacters <= 50 {
+                            // verbatim: show the plain number, without locale formatting like "-1.657"
+                            Text(verbatim: "\(viewModel.remainingCharacters)")
+                                .font(.caption.monospacedDigit())
+                                .foregroundStyle(viewModel.remainingCharacters < 0 ? .red : .secondary)
+                                .padding(.trailing, 4)
+                                .accessibilityLabel(
+                                    viewModel.remainingCharacters < 0
+                                        ? "\(-viewModel.remainingCharacters) characters over the limit"
+                                        : "\(viewModel.remainingCharacters) characters left"
+                                )
+                        }
+                    }
 
                     Button(viewModel.primaryActionTitle) {
                         viewModel.primaryActionTapped()
@@ -37,18 +51,7 @@ struct ChatView: View {
                     .disabled(!viewModel.isStreaming && !viewModel.canSend)
                 }
 
-                if viewModel.remainingCharacters <= 50 {
-                    // verbatim: show the plain number, without locale formatting like "-1.657"
-                    Text(verbatim: "\(viewModel.remainingCharacters)")
-                        .font(.caption.monospacedDigit())
-                        .foregroundStyle(viewModel.remainingCharacters < 0 ? .red : .secondary)
-                        .padding(.trailing, 4)
-                        .accessibilityLabel(
-                            viewModel.remainingCharacters < 0
-                                ? "\(-viewModel.remainingCharacters) characters over the limit"
-                                : "\(viewModel.remainingCharacters) characters left"
-                        )
-                }
+                
             }
             .padding()
         }
