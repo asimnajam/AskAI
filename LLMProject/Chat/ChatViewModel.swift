@@ -17,16 +17,18 @@ final class ChatViewModel {
 
     private var task: Task<Void, Never>?
     private let client: LLMProviding
-    
+    private let promptBuilder: ChatAssistantPromptBuilder
+    private static let errorMessage = "Sorry, I couldn't answer that right now. Please try again."
     var primaryActionTitle: String {
         isStreaming ? "Stop" : "Send"
     }
     
-    init(client: LLMProviding) {
+    init(client: LLMProviding, promptBuilder: ChatAssistantPromptBuilder = .init()) {
         self.client = client
+        self.promptBuilder = promptBuilder
     }
 
-    private let systemPrompt = "You are a friendly football poet, Write poem in 2-3 lines"
+//    private let systemPrompt = "You are a friendly football poet, Write poem in 2-3 lines"
 //    "You are a friendly football expert. Keep answers short and clear."
 //    private let systemPrompt = """
 //    You are a friendly football expert. Keep answers short and clear.
@@ -41,6 +43,29 @@ final class ChatViewModel {
         }
     }
 
+//    private func send() {
+//        let text = input.trimmingCharacters(in: .whitespacesAndNewlines)
+//        guard !text.isEmpty, !isStreaming else { return }
+//
+//        input = ""
+//        messages.append(ChatMessage(role: .user, text: text))
+//        let history = messages
+//        messages.append(ChatMessage(role: .assistant, text: ""))
+//        isStreaming = true
+//
+//        task = Task {
+//            do {
+//                for try await chunk in client.stream(history, system: systemPrompt) {
+//                    print("****> Chunk: \(chunk)")
+//                    messages[messages.count - 1].text += chunk
+//                }
+//            } catch {
+//                messages[messages.count - 1].text += "\n⚠️ \(error.localizedDescription)"
+//            }
+//            isStreaming = false
+//        }
+//    }
+    
     private func send() {
         let text = input.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty, !isStreaming else { return }
@@ -53,12 +78,15 @@ final class ChatViewModel {
 
         task = Task {
             do {
-                for try await chunk in client.stream(history, system: systemPrompt) {
+                let system = try await promptBuilder.build()
+                for try await chunk in client.stream(history, system: system.text) {
                     print("****> Chunk: \(chunk)")
                     messages[messages.count - 1].text += chunk
                 }
+            } catch is CancellationError {
+                
             } catch {
-                messages[messages.count - 1].text += "\n⚠️ \(error.localizedDescription)"
+                messages[messages.count - 1].text = Self.errorMessage
             }
             isStreaming = false
         }

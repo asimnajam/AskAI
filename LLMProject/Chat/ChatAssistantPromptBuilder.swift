@@ -11,6 +11,10 @@ import LLMKit
 struct ChatAssistantPromptBuilder {
     let promptStore: PromptStore
     
+    init(promptStore: PromptStore = BundledPromptStore()) {
+        self.promptStore = promptStore
+    }
+    
     func build(today: Date = .now) async throws -> ChatSystemPrompt {
         let template = try await promptStore.template(for: PromptID.chatAssistant.rawValue)
         let system = try template.rendered(with: [
