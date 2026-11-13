@@ -90,7 +90,7 @@ extension MatchFilters {
             "result": ["type": "string", "enum": Result.allCases.map(\.rawValue)],
             "bothTeamsScored": ["type": "boolean"],
             "hasRedCard": ["type": "boolean"],
-            "minTotalGoals": ["type": "integar", "minimum": "0"]
+            "minTotalGoals": ["type": "integer", "minimum": 0]
         ]
         
         if !vocabulary.teams.isEmpty {
@@ -98,7 +98,7 @@ extension MatchFilters {
         }
         
         if !vocabulary.competitions.isEmpty {
-            properties["competitions"] = ["type": "string", "enum": vocabulary.competitions]
+            properties["competition"] = ["type": "string", "enum": vocabulary.competitions]
         }
         
         if !vocabulary.players.isEmpty {

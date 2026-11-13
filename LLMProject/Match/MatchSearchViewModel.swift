@@ -84,6 +84,20 @@ extension MatchSearchViewModel {
         }
     }
 
+    /// Removes one filter chip and re-filters locally. No new AI call:
+    /// we already know what the user meant, minus the part they removed.
+    func remove(_ field: MatchFilters.Field) {
+        guard case .ai(let current) = mode else { return }
+        let filters = current.removing(field)
+
+        if filters.isEmpty {
+            clear()
+        } else {
+            results = matches.filter(filters.matches)
+            mode = .ai(filters)
+        }
+    }
+
     func clear() {
         searchID += 1          // also cancels any search still waiting for the AI
         query = ""
