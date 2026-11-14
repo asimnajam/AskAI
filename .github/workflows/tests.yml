@@ -1,0 +1,66 @@
+# Runs all tests (app + LLMKit package) on every push to main and on pull requests.
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# A newer push cancels a run that's still going for the same branch.
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Build and test
+    runs-on: xcode-27          # GitHub's Xcode 27 image (Apple Silicon)
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v4
+
+      - name: Show Xcode version
+        run: xcodebuild -version
+
+      # Pick the newest available iPhone simulator instead of hardcoding a name
+      # that might not exist on the runner image.
+      - name: Pick an iPhone simulator
+        id: simulator
+        run: |
+          DEVICE_ID=$(xcrun simctl list devices available --json | python3 -c '
+          import json, sys
+          devices = json.load(sys.stdin)["devices"]
+          for runtime in sorted(devices, reverse=True):
+              if "iOS" not in runtime:
+                  continue
+              for device in devices[runtime]:
+                  if device["name"].startswith("iPhone"):
+                      print(device["udid"])
+                      sys.exit(0)
+          sys.exit("No iPhone simulator found")
+          ')
+          echo "Using simulator $DEVICE_ID"
+          echo "id=$DEVICE_ID" >> "$GITHUB_OUTPUT"
+
+      # No Secrets.xcconfig in CI: the app builds in demo mode.
+      # Tests never call the network, so no API key is needed.
+      - name: Build and test
+        run: |
+          set -o pipefail
+          xcodebuild test \
+            -project LLMProject.xcodeproj \
+            -scheme LLMProject \
+            -testPlan LLMProject \
+            -destination "id=${{ steps.simulator.outputs.id }}" \
+            -resultBundlePath TestResults.xcresult \
+            CODE_SIGNING_ALLOWED=NO
+
+      # If something fails, keep the detailed results so they can be opened in Xcode.
+      - name: Upload test results
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: TestResults.xcresult
