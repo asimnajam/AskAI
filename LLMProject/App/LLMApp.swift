@@ -24,7 +24,10 @@ struct LLMApp: App {
                 models: ["gemini-flash-lite-latest", "gemini-3.5-flash", "gemini-3.8-flash"]
             )
             // Gemini first; Apple's on-device model if Gemini fails (e.g. offline).
-            let client = FallbackLLMClient(primary: gemini, fallback: OnDeviceLLMClient())
+            // Measured outermost, so the timing includes any fallback the user waited through.
+            let client = LatencyMeasuringClient(
+                wrapping: FallbackLLMClient(primary: gemini, fallback: OnDeviceLLMClient())
+            )
             chatClient = client
             summaryClient = client
         } else {
