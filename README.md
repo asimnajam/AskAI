@@ -16,9 +16,9 @@ fallbacks, evals, latency measurement and tests, not just an API call.
 
 > Built with SwiftUI, Swift Concurrency and Swift Testing. Runs without an API key in **demo mode**.
 
-<!-- Add screenshots or a short GIF here, e.g.:
-![Match summary](Docs/images/summary.png) ![Search](Docs/images/search.png) ![Chat](Docs/images/chat.png)
--->
+| Match summary | Smart search | Chat |
+|:---:|:---:|:---:|
+| ![AI match summary](Docs/images/summary.gif) | ![AI search with filter chips](Docs/images/search.gif) | ![Streaming football chat](Docs/images/chat.gif) |
 
 ---
 

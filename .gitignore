@@ -4,3 +4,5 @@ Secrets.swift
 xcuserdata/
 *.xcuserstate
 .DS_Store
+# Screen recordings (only the GIFs belong in the repo)
+Docs/images/*.mov
