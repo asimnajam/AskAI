@@ -12,30 +12,31 @@ public struct LLMClient: Sendable {
     let endpoint: URL
     let apiKey: String
     let timeout: TimeInterval
-    /// Tried in order. If a model is retired (404), rate-limited (429)
-    /// or overloaded (503), the next one is used.
+    /// Tried in order. Temporary errors (429, 5xx) are retried on the same model first;
+    /// if that doesn't help, or the model is gone (404) or times out, the next model is used.
     let models: [String]
-    
-    public init(endpoint: URL, apiKey: String, timeout: TimeInterval, models: [String]) {
+    let retryPolicy: RetryPolicy
+
+    public init(
+        endpoint: URL,
+        apiKey: String,
+        timeout: TimeInterval,
+        models: [String],
+        retryPolicy: RetryPolicy = .default
+    ) {
         self.endpoint = endpoint
         self.apiKey = apiKey
         self.timeout = timeout
         self.models = models
+        self.retryPolicy = retryPolicy
     }
-    private static let tryNextModelStatuses: Set<Int> = [404, 429, 503]
+
+    /// Statuses where another model might work. Anything else (400, 401…) means
+    /// our request or key is wrong, and no model will accept it.
+    private static let tryNextModelStatuses: Set<Int> = [404, 429, 500, 502, 503, 504]
     
     // MARK: - Wire format
-    
-//    private struct Body: Encodable {
-//        struct Message: Encodable {
-//            let role: String
-//            let content: String
-//        }
-//        let model: String
-//        let stream: Bool
-//        let messages: [Message]
-//    }
-    
+
     private struct Chunk: Decodable {
         struct Choice: Decodable {
             struct Delta: Decodable { let content: String? }
@@ -55,41 +56,61 @@ public struct LLMClient: Sendable {
 
 extension LLMClient {
     // MARK: - Public API
+    /// Tries each model in order, retrying temporary errors on the same model first.
     private func openConnection(_ makeRequest: (String) throws -> URLRequest) async throws -> (bytes: URLSession.AsyncBytes, model: String) {
         var lastError: Error = LLMError.invalidResponse
+
         for model in models {
-            let request = try makeRequest(model)
-            let bytes: URLSession.AsyncBytes
-            let response: URLResponse
-            
-            do {
-                (bytes, response) = try await URLSession.shared.bytes(for: request)
-            } catch let error as URLError where error.code == .timedOut {
-                print("⏱️ \(model) timed out, trying the next model")
-                lastError = error
-                continue
-            }
-            
-            guard let http = response as? HTTPURLResponse else { throw LLMError.invalidResponse }
-            if http.statusCode == 200 {
-                print("✅ Using \(model)")
-                return (bytes, model)
-            }
-            
-            // Read Google's error message so the console explains what went wrong.
-            var errorBody = Data()
-            for try await byte in bytes {
-                errorBody.append(byte)
-            }
-            print("❌ \(model) \(http.statusCode): \(String(decoding: errorBody, as: UTF8.self))")
-            lastError = LLMError.http(status: http.statusCode, model: model)
-            guard Self.tryNextModelStatuses.contains(http.statusCode) else {
-                throw lastError
+            var retry = 0
+
+            attempts: while true {
+                let request = try makeRequest(model)
+                let bytes: URLSession.AsyncBytes
+                let response: URLResponse
+
+                do {
+                    (bytes, response) = try await URLSession.shared.bytes(for: request)
+                } catch let error as URLError where error.code == .timedOut {
+                    // We already waited `timeout` seconds: switching models is faster than retrying.
+                    print("⏱️ \(model) timed out, trying the next model")
+                    lastError = error
+                    break attempts
+                }
+
+                guard let http = response as? HTTPURLResponse else { throw LLMError.invalidResponse }
+                if http.statusCode == 200 {
+                    print("✅ Using \(model)\(retry > 0 ? " after \(retry) retr\(retry == 1 ? "y" : "ies")" : "")")
+                    return (bytes, model)
+                }
+
+                // Read the provider's error message so the console explains what went wrong.
+                var errorBody = Data()
+                for try await byte in bytes {
+                    errorBody.append(byte)
+                }
+                print("❌ \(model) \(http.statusCode): \(String(decoding: errorBody, as: UTF8.self))")
+                lastError = LLMError.http(status: http.statusCode, model: model)
+
+                // Temporary problem: wait a little and ask the same model again.
+                if RetryPolicy.isRetryable(status: http.statusCode),
+                   let wait = retryPolicy.delay(
+                       forRetry: retry + 1,
+                       retryAfter: RetryPolicy.retryAfter(from: http)
+                   ) {
+                    retry += 1
+                    print("🔁 \(model) \(http.statusCode): retry \(retry)/\(retryPolicy.maxRetries) in \(wait)")
+                    try await Task.sleep(for: wait)   // throws if the user taps Stop
+                    continue attempts
+                }
+
+                // Not worth retrying (or retries used up): next model, or give up.
+                guard Self.tryNextModelStatuses.contains(http.statusCode) else { throw lastError }
+                break attempts
             }
         }
         throw lastError
     }
-    
+
     private func makeRequest(
         model: String,
         messages: [[String: String]],
